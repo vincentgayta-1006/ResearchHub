@@ -1,4 +1,5 @@
-
+const crypto = require("crypto");
+const { sendVerificationEmail } = require("../config/email");
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -49,25 +50,43 @@ router.post("/register", async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Generate verification token
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    // Hash token before storing it
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(verificationToken)
+      .digest("hex");
+
+    // Create unverified user
     const newUser = await User.create({
       name: name.trim(),
       email: normalizedEmail,
       password: hashedPassword,
       role,
+      isVerified: false,
+      verificationToken: hashedToken,
+      verificationTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
+    // Send verification email
+    try {
+      await sendVerificationEmail(normalizedEmail, verificationToken);
+    } catch (emailError) {
+      // Remove account if email sending fails
+      await User.findByIdAndDelete(newUser._id);
+
+      throw emailError;
+    }
+
     return res.status(201).json({
-      message: "Registration successful!",
-      user: {
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role,
-      },
+      message: "Registration successful! Please check your email to verify your account.",
     });
 
   } catch (error) {
+    console.error("Registration error:", error.message);
+
     if (error.code === 11000) {
       return res.status(409).json({
         message: "Email is already registered.",
@@ -75,8 +94,56 @@ router.post("/register", async (req, res) => {
     }
 
     return res.status(500).json({
-      message: "Registration failed.",
-      error: error.message,
+      message: "Registration failed. Please try again later.",
+    });
+  }
+});
+
+// VERIFY EMAIL
+router.get("/verify-email", async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({
+        message: "Verification token is required.",
+      });
+    }
+
+    // Hash the received token
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    // Find user with a valid, unexpired token
+    const user = await User.findOne({
+      verificationToken: hashedToken,
+      verificationTokenExpires: { $gt: new Date() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid or expired verification link.",
+      });
+    }
+
+    // Mark account as verified
+    user.isVerified = true;
+    user.verificationToken = null;
+    user.verificationTokenExpires = null;
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Email verified successfully! You can now log in.",
+    });
+
+  } catch (error) {
+    console.error("Email verification error:", error.message);
+
+    return res.status(500).json({
+      message: "Email verification failed. Please try again.",
     });
   }
 });
@@ -109,6 +176,13 @@ router.post("/login", async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({
         message: "Invalid email or password.",
+      });
+    }
+
+    // Check email verification
+    if (user.isVerified !== true) {
+      return res.status(403).json({
+        message: "Please verify your email before logging in.",
       });
     }
 

@@ -1,22 +1,24 @@
+import VerifyEmail from './components/VerifyEmail'
 import BASE_API_URL from './api'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminDashboard from './components/AdminDashboard'
 import Register from './components/Register'
 import Login from './components/Login'
 import { useEffect, useState } from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
 import ResearchDetails from './components/ResearchDetails'
 import './App.css'
 
 const API_URL = `${BASE_API_URL}/api/research`
 
 function App() {
-
-  
+  const location = useLocation()
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [research, setResearch] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -32,10 +34,37 @@ function App() {
     return savedUser ? JSON.parse(savedUser) : null
   })
 
+  useEffect(() => {
+    if (location.pathname !== '/' || !location.state?.successMessage) {
+      return
+    }
+
+    const savedUser = localStorage.getItem('user')
+
+    setUser(savedUser ? JSON.parse(savedUser) : null)
+    setSuccessMessage(location.state.successMessage)
+
+    navigate('/', {
+      replace: true,
+      state: null,
+    })
+  }, [location, navigate])
+
+  useEffect(() => {
+    if (!successMessage) return
+
+    const timer = setTimeout(() => {
+      setSuccessMessage('')
+    }, 4000)
+
+    return () => clearTimeout(timer)
+  }, [successMessage])
+
   function handleLogout() {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     setUser(null)
+    setSuccessMessage('You have successfully logged out.')
   }
 
   useEffect(() => {
@@ -127,6 +156,21 @@ function App() {
             </header>
 
             <main>
+              {successMessage && (
+                <div className="toast-notification">
+                  <span className="toast-icon">✓</span>
+
+                  <span className="toast-message">{successMessage}</span>
+
+                  <button
+                    onClick={() => setSuccessMessage('')}
+                    aria-label="Close notification"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+
               <section className="hero" id="home">
                 <span className="eyebrow">
                   YOUR ACADEMIC RESEARCH REPOSITORY
@@ -335,9 +379,12 @@ function App() {
 
       <Route path="/register" element={<Register />} />
 
+      <Route path="/verify-email" element={<VerifyEmail />} />
+
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
         <Route path="/admin" element={<AdminDashboard />} />
       </Route>
+      
     </Routes>
   )
 }

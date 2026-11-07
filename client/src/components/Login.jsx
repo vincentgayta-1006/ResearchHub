@@ -56,11 +56,14 @@ function Login() {
         throw new Error(data.message || 'Login failed. Please try again.')
       }
 
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('user', JSON.stringify(data.user))
 
-        navigate('/')
-        window.location.reload()
+      navigate('/', {
+        state: {
+          successMessage: `Welcome back, ${data.user.name}!`,
+        },
+      })
 
     } catch (err) {
       setError(err.message)

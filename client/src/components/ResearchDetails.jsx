@@ -1,3 +1,4 @@
+
 import BASE_API_URL from '../api'
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
@@ -99,16 +100,15 @@ function ResearchDetails() {
         </Link>
       </header>
 
-      {/* Main Content */}
       <main className="details-container">
 
         <Link to="/" className="back-link">
           ← Back to Research Library
         </Link>
 
+        {/* Research Information */}
         <article className="details-card">
 
-          {/* Research Header */}
           <div className="details-header">
             <span className="details-category">
               {research.category}
@@ -127,66 +127,76 @@ function ResearchDetails() {
             </div>
           </div>
 
-          {/* Abstract */}
-          <section className="details-section">
-            <h2>Abstract</h2>
-            <p className="abstract-text">
-              {research.abstract}
-            </p>
-          </section>
+          {/* Abstract and Keywords */}
+          <div className="details-information">
 
-          {/* Keywords */}
-          <section className="details-section">
-            <h2>Keywords</h2>
+            <section className="details-section abstract-section">
+              <h2>Abstract</h2>
+              <p className="abstract-text">
+                {research.abstract}
+              </p>
+            </section>
 
-            <div className="keyword-list">
-              {research.keywords?.map((keyword, index) => (
-                <span key={index} className="keyword">
-                  {keyword}
-                </span>
-              ))}
-            </div>
-          </section>
+            <section className="details-section keywords-section">
+              <h2>Keywords</h2>
+
+              <div className="keyword-list">
+                {research.keywords?.length > 0 ? (
+                  research.keywords.map((keyword, index) => (
+                    <span key={index} className="keyword">
+                      {keyword}
+                    </span>
+                  ))
+                ) : (
+                  <p className="no-keywords">
+                    No keywords available.
+                  </p>
+                )}
+              </div>
+            </section>
+
+          </div>
 
           {/* PDF Document */}
           <section className="details-section pdf-section">
+
             <div className="pdf-heading">
               <div>
                 <h2>Research Paper</h2>
-                <p>Read the complete research document below.</p>
+                <p>Full research document</p>
               </div>
-            </div>
 
-            {research.pdfUrl ? (
-              <>
-                <div className="pdf-viewer">
-                  <iframe
-                    src={research.pdfUrl}
-                    title="Research Paper PDF"
-                    className="pdf-preview"
-                  />
-                </div>
-
+              {research.pdfUrl && (
                 <a
                   href={research.pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="download-button"
                 >
-                  Open / Download PDF
+                  Open / Download PDF ↗
                 </a>
-              </>
+              )}
+            </div>
+
+            {research.pdfUrl ? (
+              <div className="pdf-viewer">
+                <iframe
+                  src={research.pdfUrl}
+                  title="Research Paper PDF"
+                  className="pdf-preview"
+                />
+              </div>
             ) : (
               <p className="no-pdf">
                 No PDF document is currently available.
               </p>
             )}
+
           </section>
 
         </article>
       </main>
 
-      {/* Footer */}
       <footer className="details-footer">
         <p>© 2026 ResearchHub. All rights reserved.</p>
         <p>Discover and explore academic research.</p>

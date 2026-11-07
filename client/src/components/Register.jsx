@@ -1,12 +1,10 @@
 import BASE_API_URL from '../api'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const API_URL = `${BASE_API_URL}/api/auth`
 
 function Register() {
-  const navigate = useNavigate()
-
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -14,6 +12,8 @@ function Register() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const [success, setSuccess] = useState('')
 
   const [showPassword, setShowPassword] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -67,12 +67,14 @@ function Register() {
           data.message || 'Registration failed. Please try again.'
         )
       }
-
-      navigate('/login', {
-        state: {
-          successMessage: 'Registration successful! You can now log in.',
-        },
-      })
+      setSuccess(
+        data.message ||
+        'Registration successful! Please check your email to verify your account.'
+      )
+      setName('')
+      setEmail('')
+      setPassword('')
+      setConfirmPassword('')
     } catch (err) {
       setError(err.message)
     } finally {
@@ -172,8 +174,6 @@ function Register() {
             </p>
           )}
 
-          {error && <p className="auth-error">{error}</p>}
-
           <label htmlFor="role">Account Type</label>
           <select
             id="role"
@@ -183,6 +183,11 @@ function Register() {
             <option value="student">Student</option>
             <option value="researcher">Researcher</option>
           </select>
+
+
+          {error && <p className="auth-error">{error}</p>}
+
+          {success && <p className="auth-success">{success}</p>}
 
           <button type="submit" disabled={loading}>
             {loading ? 'Creating account...' : 'Register'}

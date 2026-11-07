@@ -385,81 +385,124 @@ function AdminDashboard() {
           Manage ResearchHub from this dashboard.
         </p>
 
+ 
         {/* DASHBOARD OVERVIEW */}
         {activeSection === 'overview' && (
-          <div className="admin-dashboard-grid">
-
-            {/* RESEARCH MANAGEMENT CARD */}
-            <div className="admin-dashboard-card">
-              <h3>Research Management</h3>
-
-
-              <p>
-                Upload, view, edit, and delete research papers.
-              </p>
-
-              <button
-                onClick={() => {
-                  setActiveSection('research')
-                  setUploadMessage('')
-                  setUploadError('')
-                }}
-              >
-                Manage Research
-              </button>
-            </div>
-
-            {/* USER MANAGEMENT CARD */}
-            <div className="admin-dashboard-card">
-              <h3>User Management</h3>
-
-              <p>
-                View and manage registered ResearchHub users.
-              </p>
-
-              <button
-                onClick={() => {
-                  setActiveSection('users')
-                  setUsersMessage('')
-                  setUsersError('')
-                }}
-              >
-                Manage Users
-              </button>
-            </div>
+          <div className="admin-overview">
 
             {/* DASHBOARD STATISTICS */}
-            <div className="admin-dashboard-card">
-              <h3>Dashboard Statistics</h3>
+            <section className="statistics-section">
+              <div className="statistics-heading">
+                <div>
+                  <span className="eyebrow">AT A GLANCE</span>
+                  <h3>Dashboard Statistics</h3>
+                  <p>Overview of ResearchHub's registered content and users.</p>
+                </div>
+              </div>
 
-              {statisticsLoading && <p>Loading statistics...</p>}
+              {statisticsLoading && (
+                <p className="statistics-status">Loading statistics...</p>
+              )}
 
-              {statisticsError && <p>{statisticsError}</p>}
+              {statisticsError && (
+                <p className="statistics-error">{statisticsError}</p>
+              )}
 
               {!statisticsLoading && !statisticsError && (
-                <div>
-                  <p>
-                    Total Research Papers: {statistics.totalResearch}
-                  </p>
+                <div className="statistics-grid">
 
-                  <p>
-                    Total Users: {statistics.totalUsers}
-                  </p>
+                  <div className="stat-card stat-research">
+                    <div className="stat-card-top">
+                      <span className="stat-icon">📚</span>
+                      <span className="stat-label">RESEARCH PAPERS</span>
+                    </div>
+                    <h2>{statistics.totalResearch}</h2>
+                    <p>Total research papers</p>
+                  </div>
 
-                  <p>
-                    Students: {statistics.totalStudents}
-                  </p>
+                  <div className="stat-card stat-users">
+                    <div className="stat-card-top">
+                      <span className="stat-icon">👥</span>
+                      <span className="stat-label">TOTAL USERS</span>
+                    </div>
+                    <h2>{statistics.totalUsers}</h2>
+                    <p>Registered accounts</p>
+                  </div>
 
-                  <p>
-                    Researchers: {statistics.totalResearchers}
-                  </p>
+                  <div className="stat-card stat-students">
+                    <div className="stat-card-top">
+                      <span className="stat-icon">🎓</span>
+                      <span className="stat-label">STUDENTS</span>
+                    </div>
+                    <h2>{statistics.totalStudents}</h2>
+                    <p>Registered students</p>
+                  </div>
+
+                  <div className="stat-card stat-researchers">
+                    <div className="stat-card-top">
+                      <span className="stat-icon">🔬</span>
+                      <span className="stat-label">RESEARCHERS</span>
+                    </div>
+                    <h2>{statistics.totalResearchers}</h2>
+                    <p>Registered researchers</p>
+                  </div>
+
                 </div>
               )}
-            </div>
+            </section>
 
+            {/* MANAGEMENT CARDS */}
+            <section className="management-section">
+              <div className="statistics-heading">
+                <div>
+                  <span className="eyebrow">ADMIN TOOLS</span>
+                  <h3>Management</h3>
+                  <p>Manage the content and accounts in ResearchHub.</p>
+                </div>
+              </div>
+
+              <div className="management-grid">
+
+                <div className="admin-dashboard-card">
+                  <div className="management-icon">📄</div>
+                  <h3>Research Management</h3>
+                  <p>
+                    Upload, view, edit, and delete research papers.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setActiveSection('research')
+                      setUploadMessage('')
+                      setUploadError('')
+                    }}
+                  >
+                    Manage Research →
+                  </button>
+                </div>
+
+                <div className="admin-dashboard-card">
+                  <div className="management-icon">👤</div>
+                  <h3>User Management</h3>
+                  <p>
+                    View and manage registered ResearchHub users.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setActiveSection('users')
+                      setUsersMessage('')
+                      setUsersError('')
+                    }}
+                  >
+                    Manage Users →
+                  </button>
+                </div>
+
+              </div>
+            </section>
 
           </div>
         )}
+
 
         {/* RESEARCH MANAGEMENT SECTION */}
         {activeSection === 'research' && (
