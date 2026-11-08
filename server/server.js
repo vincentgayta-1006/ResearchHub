@@ -1,4 +1,3 @@
-
 const dns = require("dns");
 
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
@@ -16,6 +15,7 @@ const app = express();
 // Allowed frontend origins
 const allowedOrigins = [
     "http://localhost:5173",
+    "http://localhost:4173",
     process.env.CLIENT_URL
 ].filter(Boolean);
 

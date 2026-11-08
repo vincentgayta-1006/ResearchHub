@@ -5,8 +5,9 @@ import AdminDashboard from './components/AdminDashboard'
 import Register from './components/Register'
 import Login from './components/Login'
 import { useEffect, useState } from 'react'
-import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
+import { Routes, Route, Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import ResearchDetails from './components/ResearchDetails'
+import logo from './assets/ResearchHubLogo-1.png'
 import './App.css'
 
 const API_URL = `${BASE_API_URL}/api/research`
@@ -19,7 +20,8 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
-
+  const displayedSuccessMessage =
+    location.state?.successMessage || successMessage
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
@@ -34,31 +36,25 @@ function App() {
     return savedUser ? JSON.parse(savedUser) : null
   })
 
+
+
+  // Automatically hide success notifications
   useEffect(() => {
-    if (location.pathname !== '/' || !location.state?.successMessage) {
-      return
-    }
+    if (!displayedSuccessMessage) return
 
-    const savedUser = localStorage.getItem('user')
-
-    setUser(savedUser ? JSON.parse(savedUser) : null)
-    setSuccessMessage(location.state.successMessage)
-
-    navigate('/', {
-      replace: true,
-      state: null,
-    })
-  }, [location, navigate])
-
-  useEffect(() => {
-    if (!successMessage) return
-
-    const timer = setTimeout(() => {
+    const removeTimer = setTimeout(() => {
       setSuccessMessage('')
+
+      if (location.state?.successMessage) {
+        navigate('/', {
+          replace: true,
+          state: null,
+        })
+      }
     }, 4000)
 
-    return () => clearTimeout(timer)
-  }, [successMessage])
+    return () => clearTimeout(removeTimer)
+  }, [displayedSuccessMessage, location.state?.successMessage, navigate])
 
   function handleLogout() {
     localStorage.removeItem('token')
@@ -113,7 +109,7 @@ function App() {
           <div className="app">
             <header className="navbar">
               <Link to="/" className="brand">
-                <span className="brand-icon">R</span>
+                <img src={logo} alt="ResearchHub Logo" className="brand-logo" />
                 ResearchHub
               </Link>
 
@@ -156,14 +152,28 @@ function App() {
             </header>
 
             <main>
-              {successMessage && (
-                <div className="toast-notification">
+              {displayedSuccessMessage && (
+                <div
+                  key={displayedSuccessMessage}
+                  className="toast-notification"
+                >
                   <span className="toast-icon">✓</span>
 
-                  <span className="toast-message">{successMessage}</span>
+                  <span className="toast-message">
+                    {displayedSuccessMessage}
+                  </span>
 
                   <button
-                    onClick={() => setSuccessMessage('')}
+                    onClick={() => {
+                      setSuccessMessage('')
+
+                      if (location.state?.successMessage) {
+                        navigate('/', {
+                          replace: true,
+                          state: null,
+                        })
+                      }
+                    }}
                     aria-label="Close notification"
                   >
                     ×
@@ -370,14 +380,29 @@ function App() {
         }
       />
 
-      <Route path="/login" element={<Login />} />
+      <Route
+        path="/login"
+        element={
+          user ? (
+            <Navigate to="/" replace />
+          ) : (
+            <Login
+              setUser={setUser}
+              setSuccessMessage={setSuccessMessage}
+            />
+          )
+        }
+      />
 
       <Route
         path="/research/:id"
         element={<ResearchDetails />}
       />
 
-      <Route path="/register" element={<Register />} />
+      <Route
+        path="/register"
+        element={user ? <Navigate to="/" replace /> : <Register />}
+      />
 
       <Route path="/verify-email" element={<VerifyEmail />} />
 

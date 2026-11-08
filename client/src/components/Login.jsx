@@ -1,16 +1,12 @@
+import logo from '../assets/ResearchHubLogo-1.png'
 import BASE_API_URL from '../api'
-import { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 const API_URL = `${BASE_API_URL}/api/auth`
 
-function Login() {
+function Login({ setUser, setSuccessMessage }) {
   const navigate = useNavigate()
-
-  const location = useLocation()
-  const [successMessage, setSuccessMessage] = useState(
-    location.state?.successMessage || ''
-  )
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -18,12 +14,6 @@ function Login() {
   const [error, setError] = useState('')
 
   const [showPassword, setShowPassword] = useState(false)
-
-  useEffect(() => {
-    if (successMessage) {
-      navigate(location.pathname, { replace: true, state: null })
-    }
-  }, [successMessage, navigate, location.pathname])
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -49,21 +39,15 @@ function Login() {
       const data = await response.json()
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Incorrect email or password.')
-        }
-
         throw new Error(data.message || 'Login failed. Please try again.')
       }
 
       localStorage.setItem('token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
 
-      navigate('/', {
-        state: {
-          successMessage: `Welcome back, ${data.user.name}!`,
-        },
-      })
+      setUser(data.user)
+      setSuccessMessage(`Welcome back, ${data.user.name}!`)
+      navigate('/')
 
     } catch (err) {
       setError(err.message)
@@ -76,16 +60,12 @@ function Login() {
     <div className="auth-page">
       <div className="auth-card">
         <Link to="/" className="brand">
-          <span className="brand-icon">R</span>
+          <img src={logo} alt="ResearchHub Logo" className="brand-logo" />
           ResearchHub
         </Link>
 
         <h1>Welcome back</h1>
         <p>Log in to your ResearchHub account.</p>
-
-        {successMessage && (
-          <p className="auth-success">{successMessage}</p>
-        )}
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="email">Email Address</label>

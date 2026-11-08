@@ -1,3 +1,4 @@
+
 import BASE_API_URL from '../api'
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -33,11 +34,21 @@ function AdminDashboard() {
   const [editingResearch, setEditingResearch] = useState(null)
   const [updating, setUpdating] = useState(false)
 
+  // Research deletion modal states
+  const [researchToDelete, setResearchToDelete] = useState(null)
+  const [deletingResearch, setDeletingResearch] = useState(false)
+
   // User management states
   const [users, setUsers] = useState([])
   const [usersLoading, setUsersLoading] = useState(false)
   const [usersError, setUsersError] = useState('')
   const [usersMessage, setUsersMessage] = useState('')
+
+  // User deletion modal states
+  const [userToDelete, setUserToDelete] = useState(null)
+  const [deletingUser, setDeletingUser] = useState(false)
+
+  const [userDeleteSuccess, setUserDeleteSuccess] = useState('')
 
   // Fetch dashboard statistics
   useEffect(() => {
@@ -96,6 +107,28 @@ function AdminDashboard() {
 
     fetchStatistics()
   }, [activeSection])
+
+  // Automatically hide success notification after 3 seconds
+  useEffect(() => {
+    if (!userDeleteSuccess) return
+
+    const timer = setTimeout(() => {
+      setUserDeleteSuccess('')
+    }, 3000)
+
+    return () => clearTimeout(timer)
+  }, [userDeleteSuccess])
+
+  // Automatically hide research success notification after 3 seconds
+  useEffect(() => {
+    if (!uploadMessage) return
+
+    const timer = setTimeout(() => {
+      setUploadMessage('')
+    }, 3000)
+
+    return () => clearTimeout(timer)
+  }, [uploadMessage])
 
   // Fetch research papers
   useEffect(() => {
@@ -181,7 +214,7 @@ function AdminDashboard() {
       const token = localStorage.getItem('token')
 
       const response = await fetch(
-        	`${BASE_API_URL}/api/research`,
+        `${BASE_API_URL}/api/research`,
         {
           method: 'POST',
           headers: {
@@ -215,19 +248,24 @@ function AdminDashboard() {
     }
   }
 
-  // Delete research paper
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      'Are you sure you want to delete this research paper?'
-    )
+  // Open research deletion confirmation modal
+  const handleDelete = (id, title) => {
+    setResearchToDelete({ id, title })
+  }
 
-    if (!confirmDelete) return
+  // Confirm research deletion
+  const confirmDeleteResearch = async () => {
+    if (!researchToDelete) return
 
     try {
+      setDeletingResearch(true)
+      setUploadError('')
+      setUploadMessage('')
+
       const token = localStorage.getItem('token')
 
       const response = await fetch(
-        `${BASE_API_URL}/api/research/${id}`,
+        `${BASE_API_URL}/api/research/${researchToDelete.id}`,
         {
           method: 'DELETE',
           headers: {
@@ -245,17 +283,79 @@ function AdminDashboard() {
       }
 
       setResearch((prev) =>
-        prev.filter((paper) => paper._id !== id)
+        prev.filter(
+          (paper) => paper._id !== researchToDelete.id
+        )
       )
 
       setUploadMessage(
-        'Research paper deleted successfully!'
+        `"${researchToDelete.title}" was deleted successfully.`
       )
 
-      setUploadError('')
+      setResearchToDelete(null)
 
     } catch (error) {
       setUploadError(error.message)
+    } finally {
+      setDeletingResearch(false)
+    }
+  }
+
+
+  // Open user deletion confirmation modal
+  const handleDeleteUser = (id, name) => {
+    setUserToDelete({ id, name })
+  }
+
+  // Confirm user deletion
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return
+
+    try {
+      setDeletingUser(true)
+      setUsersError('')
+      setUsersMessage('')
+      setUserDeleteSuccess('')
+
+      const token = localStorage.getItem('token')
+
+      const response = await fetch(
+        `${BASE_API_URL}/api/auth/users/${userToDelete.id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || 'Failed to delete user.'
+        )
+      }
+
+      // Remove deleted user from the table
+      setUsers((prev) =>
+        prev.filter(
+          (registeredUser) =>
+            registeredUser._id !== userToDelete.id
+        )
+      )
+
+      // Show success notification
+      setUserDeleteSuccess(
+        `${userToDelete.name} was deleted successfully.`
+      )
+      // Close confirmation modal
+      setUserToDelete(null)
+
+    } catch (error) {
+      setUsersError(error.message)
+    } finally {
+      setDeletingUser(false)
     }
   }
 
@@ -311,49 +411,6 @@ function AdminDashboard() {
     }
   }
 
-  // Delete registered user
-  const handleDeleteUser = async (id, name) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete the account of ${name}?`
-    )
-
-    if (!confirmDelete) return
-
-    try {
-      setUsersMessage('')
-      setUsersError('')
-
-      const token = localStorage.getItem('token')
-
-      const response = await fetch(
-        	`${BASE_API_URL}/api/auth/users/${id}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || 'Failed to delete user.'
-        )
-      }
-
-      setUsers((prev) =>
-        prev.filter((registeredUser) => registeredUser._id !== id)
-      )
-
-      setUsersMessage('User deleted successfully!')
-
-    } catch (error) {
-      setUsersError(error.message)
-    }
-  }
-
   return (
     <div className="app">
 
@@ -364,9 +421,9 @@ function AdminDashboard() {
           ResearchHub
         </Link>
 
-        <div>
+        <div className="admin-nav-actions">
           <span>Admin: {user?.name}</span>
-          {' '}
+
           <Link to="/" className="btn-login">
             Back to Homepage
           </Link>
@@ -374,6 +431,25 @@ function AdminDashboard() {
       </header>
 
       <main className="about-section">
+
+        {/* USER DELETION SUCCESS ALERT */}
+        {userDeleteSuccess && (
+            <div className="toast-notification admin-toast-fade">
+            <span className="toast-icon">✓</span>
+
+            <span className="toast-message">
+              {userDeleteSuccess}
+            </span>
+
+            <button
+              type="button"
+              onClick={() => setUserDeleteSuccess('')}
+              aria-label="Close notification"
+            >
+              ×
+            </button>
+          </div>
+        )}
 
         {/* DASHBOARD HEADER */}
         <span className="eyebrow">ADMINISTRATION</span>
@@ -385,7 +461,6 @@ function AdminDashboard() {
           Manage ResearchHub from this dashboard.
         </p>
 
- 
         {/* DASHBOARD OVERVIEW */}
         {activeSection === 'overview' && (
           <div className="admin-overview">
@@ -396,16 +471,22 @@ function AdminDashboard() {
                 <div>
                   <span className="eyebrow">AT A GLANCE</span>
                   <h3>Dashboard Statistics</h3>
-                  <p>Overview of ResearchHub's registered content and users.</p>
+                  <p>
+                    Overview of ResearchHub's registered content and users.
+                  </p>
                 </div>
               </div>
 
               {statisticsLoading && (
-                <p className="statistics-status">Loading statistics...</p>
+                <p className="statistics-status">
+                  Loading statistics...
+                </p>
               )}
 
               {statisticsError && (
-                <p className="statistics-error">{statisticsError}</p>
+                <p className="statistics-error">
+                  {statisticsError}
+                </p>
               )}
 
               {!statisticsLoading && !statisticsError && (
@@ -457,7 +538,9 @@ function AdminDashboard() {
                 <div>
                   <span className="eyebrow">ADMIN TOOLS</span>
                   <h3>Management</h3>
-                  <p>Manage the content and accounts in ResearchHub.</p>
+                  <p>
+                    Manage the content and accounts in ResearchHub.
+                  </p>
                 </div>
               </div>
 
@@ -503,7 +586,6 @@ function AdminDashboard() {
           </div>
         )}
 
-
         {/* RESEARCH MANAGEMENT SECTION */}
         {activeSection === 'research' && (
           <section className="admin-management-section">
@@ -528,7 +610,26 @@ function AdminDashboard() {
                 : 'Add Research Paper'}
             </button>
 
-            {uploadMessage && <p>{uploadMessage}</p>}
+            {/* RESEARCH SUCCESS ALERT */}
+            {uploadMessage && (
+              <div className="toast-notification admin-toast-fade">
+                <span className="toast-icon">✓</span>
+
+                <span className="toast-message">
+                  {uploadMessage}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setUploadMessage('')}
+                  aria-label="Close notification"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            {/* RESEARCH ERROR ALERT */}
             {uploadError && <p>{uploadError}</p>}
 
             {/* UPLOAD FORM */}
@@ -735,7 +836,8 @@ function AdminDashboard() {
                             </button>
 
                             <button
-                              onClick={() => handleDelete(paper._id)}
+                              type="button"
+                              onClick={() => handleDelete(paper._id, paper.title)}
                             >
                               Delete
                             </button>
@@ -848,6 +950,100 @@ function AdminDashboard() {
             )}
 
           </section>
+        )}
+
+        {/* DELETE RESEARCH CONFIRMATION MODAL */}
+        {researchToDelete && (
+          <div className="delete-modal-overlay">
+            <div
+              className="delete-modal"
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="delete-research-modal-title"
+              aria-describedby="delete-research-modal-description"
+            >
+              <div className="delete-modal-icon">
+                🗑️
+              </div>
+
+              <h3 id="delete-research-modal-title">
+                Delete Research Paper?
+              </h3>
+
+              <p id="delete-research-modal-description">
+                Are you sure you want to delete
+                <strong> "{researchToDelete.title}"</strong>?
+                This action cannot be undone.
+              </p>
+
+              <div className="delete-modal-actions">
+                <button
+                  type="button"
+                  className="delete-cancel-btn"
+                  onClick={() => setResearchToDelete(null)}
+                  disabled={deletingResearch}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  className="delete-confirm-btn"
+                  onClick={confirmDeleteResearch}
+                  disabled={deletingResearch}
+                >
+                  {deletingResearch ? 'Deleting...' : 'Delete Research'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* DELETE USER CONFIRMATION MODAL */}
+        {userToDelete && (
+          <div className="delete-modal-overlay">
+            <div
+              className="delete-modal"
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="delete-user-modal-title"
+              aria-describedby="delete-user-modal-description"
+            >
+              <div className="delete-modal-icon">
+                🗑️
+              </div>
+
+              <h3 id="delete-user-modal-title">
+                Delete User?
+              </h3>
+
+              <p id="delete-user-modal-description">
+                Are you sure you want to delete
+                <strong> "{userToDelete.name}"</strong>?
+                This action cannot be undone.
+              </p>
+
+              <div className="delete-modal-actions">
+                <button
+                  type="button"
+                  className="delete-cancel-btn"
+                  onClick={() => setUserToDelete(null)}
+                  disabled={deletingUser}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  className="delete-confirm-btn"
+                  onClick={confirmDeleteUser}
+                  disabled={deletingUser}
+                >
+                  {deletingUser ? 'Deleting...' : 'Delete User'}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
       </main>

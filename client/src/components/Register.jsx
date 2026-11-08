@@ -1,3 +1,4 @@
+import logo from '../assets/ResearchHubLogo-1.png'
 import BASE_API_URL from '../api'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -86,7 +87,7 @@ function Register() {
     <div className="auth-page">
       <div className="auth-card">
         <Link to="/" className="brand">
-          <span className="brand-icon">R</span>
+          <img src={logo} alt="ResearchHub Logo" className="brand-logo" />
           ResearchHub
         </Link>
 

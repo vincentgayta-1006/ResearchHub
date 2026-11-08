@@ -5,21 +5,18 @@ import BASE_API_URL from '../api'
 
 function VerifyEmail() {
   const [searchParams] = useSearchParams()
-  const [status, setStatus] = useState('verifying')
-  const [message, setMessage] = useState('')
+  const token = searchParams.get('token')
+
+  const [status, setStatus] = useState(token ? 'verifying' : 'error')
+  const [message, setMessage] = useState(
+    token ? '' : 'Verification token is missing.'
+  )
+
   const verificationStarted = useRef(false)
 
   useEffect(() => {
-    if (verificationStarted.current) return
+    if (!token || verificationStarted.current) return
     verificationStarted.current = true
-
-    const token = searchParams.get('token')
-
-    if (!token) {
-      setStatus('error')
-      setMessage('Verification token is missing.')
-      return
-    }
 
     async function verifyEmail() {
       try {
@@ -42,7 +39,7 @@ function VerifyEmail() {
     }
 
     verifyEmail()
-  }, [searchParams])
+  }, [token])
 
   return (
     <div className="verify-page">

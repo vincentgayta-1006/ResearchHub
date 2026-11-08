@@ -12,7 +12,7 @@ function ProtectedRoute({ allowedRoles }) {
   try {
     user = savedUser ? JSON.parse(savedUser) : null
   } catch {
-    user = null
+    // Keep user null if the saved user data is invalid.
   }
 
   if (!token || !user) {

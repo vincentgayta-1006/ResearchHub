@@ -164,9 +164,10 @@ router.post("/login", async (req, res) => {
       email: email.toLowerCase().trim(),
     });
 
+    // Check if email exists
     if (!user) {
-      return res.status(401).json({
-        message: "Invalid email or password.",
+      return res.status(404).json({
+        message: "No account is registered with this email address. Please register first.",
       });
     }
 
@@ -175,7 +176,7 @@ router.post("/login", async (req, res) => {
 
     if (!isMatch) {
       return res.status(401).json({
-        message: "Invalid email or password.",
+        message: "Incorrect password. Please try again.",
       });
     }
 
@@ -205,12 +206,14 @@ router.post("/login", async (req, res) => {
     });
 
   } catch (error) {
+    console.error("Login error:", error.message);
+
     return res.status(500).json({
-      message: "Login failed.",
-      error: error.message,
+      message: "Login failed. Please try again later.",
     });
   }
 });
+
 
 // PROTECTED PROFILE ROUTE
 router.get("/profile", authMiddleware, async (req, res) => {
@@ -228,7 +231,7 @@ router.get("/profile", authMiddleware, async (req, res) => {
       user,
     });
 
-  } catch (error) {
+  } catch {
     return res.status(500).json({
       message: "Failed to retrieve profile.",
     });
