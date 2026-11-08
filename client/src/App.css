@@ -1923,3 +1923,1142 @@ a {
   height: 35px;
   object-fit: contain;
 }
+
+
+/* =================================
+   RESPONSIVE RESEARCH SECTION
+================================= */
+
+/* Research Grid */
+.research-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 280px), 1fr)
+  );
+  gap: 22px;
+  align-items: stretch;
+}
+
+/* Individual Research Cards */
+.research-card {
+  min-width: 0;
+  height: 100%;
+}
+
+.research-card h3 {
+  min-height: unset;
+  overflow-wrap: anywhere;
+}
+
+.paper-category {
+  overflow-wrap: anywhere;
+}
+
+.paper-authors {
+  min-height: unset;
+  overflow-wrap: anywhere;
+}
+
+/* Research Card Footer */
+.paper-footer {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.view-details {
+  white-space: nowrap;
+}
+
+/* Research Filters */
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filter-controls select {
+  flex: 1 1 190px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* =================================
+   TABLET RESPONSIVENESS
+================================= */
+
+@media (max-width: 768px) {
+
+  .research-section {
+    padding: 55px 20px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .research-grid {
+    gap: 18px;
+  }
+
+  .research-card {
+    padding: 21px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+}
+
+/* =================================
+   MOBILE RESPONSIVENESS
+================================= */
+
+@media (max-width: 480px) {
+
+  .research-section {
+    padding: 40px 16px;
+  }
+
+  .section-heading h2 {
+    font-size: 26px;
+  }
+
+  .section-heading p {
+    font-size: 14px;
+  }
+
+  .filter-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filter-controls select {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .research-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .research-card {
+    padding: 20px;
+  }
+
+  .research-card h3 {
+    font-size: 17px;
+    line-height: 1.45;
+  }
+
+  .paper-footer {
+    align-items: center;
+    font-size: 12px;
+  }
+
+  .view-details {
+    font-size: 12px;
+  }
+
+  .pagination {
+    gap: 10px;
+  }
+
+  .pagination button {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+
+  .pagination span {
+    width: 100%;
+    order: -1;
+    text-align: center;
+  }
+
+}
+
+
+/* =========================================
+   RESPONSIVE RESEARCH DETAILS PAGE
+========================================= */
+
+/* Prevent content from overflowing */
+.details-page,
+.details-container,
+.details-card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.details-container {
+  width: 100%;
+}
+
+/* Research information */
+.details-header h1 {
+  overflow-wrap: anywhere;
+  line-height: 1.3;
+}
+
+.details-authors,
+.abstract-text {
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+
+.details-information {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 24px;
+}
+
+.details-section {
+  min-width: 0;
+}
+
+.keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.keyword {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* PDF section */
+.pdf-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.download-button {
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: clamp(420px, 75vh, 900px);
+  overflow: hidden;
+}
+
+.pdf-preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Navbar */
+.details-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.details-home-link {
+  flex-shrink: 0;
+}
+
+/* Footer */
+.details-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .details-navbar {
+    padding: 14px 5%;
+  }
+
+  .details-container {
+    padding: 30px 20px;
+  }
+
+  .details-card {
+    padding: 24px;
+  }
+
+  .details-header h1 {
+    font-size: 28px;
+  }
+
+  .details-information {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .pdf-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pdf-viewer {
+    height: 65vh;
+    min-height: 420px;
+  }
+
+  .details-footer {
+    padding: 20px;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .details-navbar {
+    padding: 14px 16px;
+  }
+
+  .details-navbar .brand {
+    width: auto;
+    justify-content: flex-start;
+    font-size: 17px;
+  }
+
+  .details-container {
+    padding: 24px 16px;
+  }
+
+  .back-link {
+    font-size: 13px;
+  }
+
+  .details-card {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .details-header h1 {
+    font-size: 22px;
+    line-height: 1.4;
+  }
+
+  .details-authors {
+    font-size: 14px;
+  }
+
+  .details-meta {
+    font-size: 13px;
+  }
+
+  .details-section h2 {
+    font-size: 19px;
+  }
+
+  .abstract-text {
+    font-size: 14px;
+  }
+
+  .keyword {
+    font-size: 12px;
+  }
+
+  .pdf-heading h2 {
+    font-size: 20px;
+  }
+
+  .pdf-heading p {
+    font-size: 13px;
+  }
+
+  .download-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .pdf-viewer {
+    height: 60vh;
+    min-height: 350px;
+    max-height: 600px;
+  }
+
+  .details-footer {
+    padding: 20px 16px;
+    font-size: 12px;
+  }
+}
+
+
+/* Limit Research Details content width on large screens */
+.details-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.details-card {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.details-footer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+/* Limit homepage research section width */
+.research-section {
+  width: 100%;
+}
+
+.research-grid {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* Keep cards from stretching */
+.research-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .research-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .research-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================
+   RESPONSIVE ADMIN DASHBOARD
+========================================= */
+
+/* Main dashboard container */
+.admin-page-container {
+  width: 100%;
+  max-width: 1260px;
+  margin: 0 auto;
+  min-width: 0;
+}
+
+.admin-page-container > * {
+  min-width: 0;
+}
+
+/* Admin navigation */
+.admin-nav-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  min-width: 0;
+}
+
+.admin-nav-actions span {
+  overflow-wrap: anywhere;
+}
+
+/* Dashboard overview */
+.admin-overview {
+  width: 100%;
+  max-width: 100%;
+  margin: 35px auto 0;
+}
+
+.statistics-section,
+.management-section {
+  width: 100%;
+  min-width: 0;
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.stat-card {
+  min-width: 0;
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.stat-card h2 {
+  overflow-wrap: anywhere;
+}
+
+.management-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+.admin-dashboard-card {
+  min-width: 0;
+  width: 100%;
+}
+
+.admin-dashboard-card p {
+  overflow-wrap: anywhere;
+}
+
+/* Management sections */
+.admin-management-section {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 30px auto 0;
+}
+
+.admin-management-section h2,
+.admin-management-section h3,
+.admin-management-section p {
+  overflow-wrap: anywhere;
+}
+
+/* Upload and edit forms */
+.admin-upload-form {
+  width: 100%;
+  max-width: 750px;
+  margin: 25px auto;
+}
+
+.admin-upload-form input,
+.admin-upload-form textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.admin-upload-form textarea {
+  resize: vertical;
+}
+
+/* Tables */
+.admin-research-list {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-top: 30px;
+}
+
+.admin-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  overflow-wrap: anywhere;
+}
+
+.admin-table td:last-child {
+  white-space: nowrap;
+}
+
+/* Delete confirmation modal */
+.delete-modal-overlay {
+  padding: 16px;
+}
+
+.delete-modal {
+  width: 100%;
+  max-width: 450px;
+  box-sizing: border-box;
+}
+
+.delete-modal p {
+  overflow-wrap: anywhere;
+}
+
+.delete-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .admin-page-container {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  .statistics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .management-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-overview {
+    margin-top: 28px;
+  }
+}
+
+/* Small tablet and mobile */
+@media (max-width: 600px) {
+  .admin-page-container {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .admin-nav-actions {
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .admin-nav-actions span {
+    width: 100%;
+    text-align: center;
+  }
+
+  .statistics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-card h2 {
+    font-size: 26px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+  }
+
+  .management-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .admin-management-section {
+    margin-top: 24px;
+  }
+
+  .admin-upload-form {
+    padding: 18px;
+  }
+
+  .admin-table {
+    min-width: 600px;
+  }
+
+  .delete-modal {
+    padding: 22px;
+  }
+
+  .delete-modal-actions {
+    flex-direction: column;
+  }
+
+  .delete-modal-actions button {
+    width: 100%;
+  }
+}
+
+/* Very small mobile */
+@media (max-width: 380px) {
+  .admin-page-container {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .statistics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 18px;
+  }
+
+  .admin-upload-form {
+    padding: 15px;
+  }
+
+  .admin-table {
+    min-width: 550px;
+  }
+}
+
+
+/* =========================================
+   ADMIN RESEARCH SEARCH AND FILTER
+========================================= */
+
+.admin-research-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  margin: 25px 0;
+}
+
+.admin-search-form,
+.admin-filter-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-search-form {
+  flex: 1 1 350px;
+}
+
+.admin-search-form input {
+  flex: 1;
+  min-width: 180px;
+  max-width: 100%;
+}
+
+.admin-filter-form select {
+  min-width: 170px;
+  max-width: 100%;
+}
+
+.admin-search-form button,
+.admin-filter-form button {
+  white-space: nowrap;
+}
+
+.admin-filter-form .admin-reset-button {
+  background: #e8ece8;
+  color: #31513d;
+}
+
+.admin-no-results {
+  padding: 25px;
+  text-align: center;
+}
+
+/* =========================================
+   ADMIN TABLE ACTION SPACING
+========================================= */
+
+.admin-table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-table-actions a,
+.admin-table-actions button {
+  white-space: nowrap;
+}
+
+/* Tablet and mobile */
+@media (max-width: 600px) {
+  .admin-research-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-search-form,
+  .admin-filter-form {
+    width: 100%;
+  }
+
+  .admin-search-form {
+    flex-wrap: wrap;
+  }
+
+  .admin-search-form input {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .admin-search-form button {
+    width: 100%;
+  }
+
+  .admin-filter-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-filter-form select {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .admin-filter-form button {
+    width: 100%;
+  }
+
+  .admin-table-actions {
+    gap: 14px;
+  }
+}
+
+
+/* =========================================
+   ADMIN RESEARCH MANAGEMENT UI
+========================================= */
+
+.admin-research-list {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 35px auto 0;
+}
+
+.admin-research-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.admin-research-list-header h3 {
+  margin: 0;
+  font-size: 22px;
+  color: #244b36;
+}
+
+.admin-research-list-header p {
+  margin: 6px 0 0;
+  color: #718078;
+  font-size: 13px;
+}
+
+/* Search and filter toolbar */
+.admin-research-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 18px;
+  margin-bottom: 20px;
+  background: #f5f8f5;
+  border: 1px solid #e1e9e2;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.admin-search-form,
+.admin-filter-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+}
+
+.admin-search-form input,
+.admin-filter-form select {
+  height: 44px;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid #d6e0d7;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #263c2d;
+  font-size: 14px;
+  padding: 0 12px;
+}
+
+.admin-search-form input {
+  flex: 1;
+  width: 100%;
+}
+
+.admin-filter-form select {
+  flex: 1;
+  width: 100%;
+}
+
+.admin-search-form input:focus,
+.admin-filter-form select:focus {
+  outline: none;
+  border-color: #477b57;
+  box-shadow: 0 0 0 3px rgba(71, 123, 87, 0.12);
+}
+
+.admin-search-form button,
+.admin-filter-form button {
+  height: 44px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 7px;
+  background: #315d40;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.admin-search-form button:hover,
+.admin-filter-form button:hover {
+  background: #244a31;
+}
+
+.admin-filter-form .admin-reset-button {
+  background: #e4ebe5;
+  color: #315d40;
+}
+
+.admin-filter-form .admin-reset-button:hover {
+  background: #d4e1d6;
+}
+
+/* Research table */
+.admin-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e9e3;
+  border-radius: 10px;
+  background: white;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  padding: 15px 18px;
+  background: #f3f7f3;
+  color: #31513d;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 16px 18px;
+  border-top: 1px solid #edf1ed;
+  color: #44534a;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+  background: #f8faf8;
+}
+
+.admin-table td:first-child {
+  min-width: 220px;
+  max-width: 380px;
+  overflow-wrap: anywhere;
+}
+
+/* Table action buttons */
+.admin-table-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: max-content;
+}
+
+.admin-table-actions a,
+.admin-table-actions button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 58px;
+  padding: 8px 13px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-view-action {
+  background: #e8f0ea;
+  color: #315d40;
+}
+
+.admin-view-action:hover {
+  background: #d7e6da;
+}
+
+.admin-table-actions .admin-edit-action {
+  background: #edf0f5;
+  color: #405a79;
+}
+
+.admin-table-actions .admin-edit-action:hover {
+  background: #dce4ee;
+}
+
+.admin-table-actions .admin-delete-action {
+  background: #fbeaea;
+  color: #a33d3d;
+}
+
+.admin-table-actions .admin-delete-action:hover {
+  background: #f4dada;
+}
+
+.admin-no-results {
+  padding: 30px 18px;
+  margin: 0;
+  border: 1px dashed #ccd9ce;
+  border-radius: 10px;
+  background: #f8faf8;
+  color: #718078;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 900px) {
+  .admin-research-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-search-form,
+  .admin-filter-form {
+    width: 100%;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+  .admin-research-list-header h3 {
+    font-size: 19px;
+  }
+
+  .admin-research-toolbar {
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .admin-search-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+
+  .admin-search-form input {
+    width: 100%;
+  }
+
+  .admin-filter-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .admin-filter-form select {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .admin-filter-form button {
+    width: 100%;
+    padding: 0 12px;
+  }
+
+  .admin-table {
+    min-width: 650px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 12px;
+  }
+
+  .admin-table-actions {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-search-form {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-search-form button {
+    width: 100%;
+  }
+
+  .admin-filter-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-filter-form select {
+    grid-column: 1 / -1;
+  }
+
+  .admin-filter-form .admin-reset-button {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Admin research table - Delete button text */
+.admin-table-actions .admin-delete-action {
+  color: #ffffff !important;
+  background-color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.admin-table-actions .admin-delete-action:hover {
+  color: #ffffff !important;
+  background-color: #bb2d3b;
+  border-color: #bb2d3b;
+}

@@ -24,6 +24,13 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // Research search and filter states
+  const [researchSearchInput, setResearchSearchInput] = useState('')
+  const [researchSearch, setResearchSearch] = useState('')
+
+  const [researchCategoryFilter, setResearchCategoryFilter] = useState('')
+  const [appliedResearchCategory, setAppliedResearchCategory] = useState('')
+
   // Upload states
   const [showUploadForm, setShowUploadForm] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -97,7 +104,6 @@ function AdminDashboard() {
             (user) => user.role === 'researcher'
           ).length,
         })
-
       } catch (error) {
         setStatisticsError(error.message)
       } finally {
@@ -301,7 +307,6 @@ function AdminDashboard() {
     }
   }
 
-
   // Open user deletion confirmation modal
   const handleDeleteUser = (id, name) => {
     setUserToDelete({ id, name })
@@ -349,6 +354,7 @@ function AdminDashboard() {
       setUserDeleteSuccess(
         `${userToDelete.name} was deleted successfully.`
       )
+
       // Close confirmation modal
       setUserToDelete(null)
 
@@ -411,6 +417,46 @@ function AdminDashboard() {
     }
   }
 
+  // Get available research categories
+  const researchCategories = [
+    ...new Set(
+      research
+        .map((paper) => paper.category)
+        .filter(Boolean)
+    ),
+  ].sort()
+
+  // Filter research papers
+  const filteredResearch = research.filter((paper) => {
+    const authorsText = Array.isArray(paper.authors)
+      ? paper.authors.join(' ')
+      : paper.authors || ''
+
+    const keywordsText = Array.isArray(paper.keywords)
+      ? paper.keywords.join(' ')
+      : paper.keywords || ''
+
+    const searchableText = [
+      paper.title,
+      authorsText,
+      paper.category,
+      keywordsText,
+      paper.year,
+    ]
+      .join(' ')
+      .toLowerCase()
+
+    const matchesSearch = searchableText.includes(
+      researchSearch.toLowerCase()
+    )
+
+    const matchesCategory =
+      !appliedResearchCategory ||
+      paper.category === appliedResearchCategory
+
+    return matchesSearch && matchesCategory
+  })
+
   return (
     <div className="app">
 
@@ -430,11 +476,11 @@ function AdminDashboard() {
         </div>
       </header>
 
-      <main className="about-section">
+      <main className="about-section admin-page-container">
 
         {/* USER DELETION SUCCESS ALERT */}
         {userDeleteSuccess && (
-            <div className="toast-notification admin-toast-fade">
+          <div className="toast-notification admin-toast-fade">
             <span className="toast-icon">✓</span>
 
             <span className="toast-message">
@@ -718,7 +764,11 @@ function AdminDashboard() {
                 <input
                   type="text"
                   name="authors"
-                  defaultValue={editingResearch.authors.join(', ')}
+                  defaultValue={
+                    Array.isArray(editingResearch.authors)
+                      ? editingResearch.authors.join(', ')
+                      : editingResearch.authors
+                  }
                   required
                 />
 
@@ -741,7 +791,11 @@ function AdminDashboard() {
                 <input
                   type="text"
                   name="keywords"
-                  defaultValue={editingResearch.keywords?.join(', ')}
+                  defaultValue={
+                    Array.isArray(editingResearch.keywords)
+                      ? editingResearch.keywords.join(', ')
+                      : editingResearch.keywords || ''
+                  }
                 />
 
                 <label>Publication Year</label>
@@ -780,6 +834,10 @@ function AdminDashboard() {
                 setEditingResearch(null)
                 setUploadMessage('')
                 setUploadError('')
+                setResearchSearchInput('')
+                setResearchSearch('')
+                setResearchCategoryFilter('')
+                setAppliedResearchCategory('')
               }}
             >
               Back to Dashboard
@@ -792,61 +850,157 @@ function AdminDashboard() {
               <p>No research papers found.</p>
             )}
 
-            {/* RESEARCH TABLE */}
+            {/* RESEARCH TABLE AND SEARCH */}
             {!loading && !error && research.length > 0 && (
               <div className="admin-research-list">
 
-                <h3>
-                  Research Papers ({research.length})
-                </h3>
-
-                <div className="admin-table-wrapper">
-                  <table className="admin-table">
-                    <thead>
-                      <tr>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Year</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      {research.map((paper) => (
-                        <tr key={paper._id}>
-                          <td>{paper.title}</td>
-                          <td>{paper.category}</td>
-                          <td>{paper.year}</td>
-
-                          <td>
-                            <Link to={`/research/${paper._id}`}>
-                              View
-                            </Link>
-                            {' '}
-
-                            <button
-                              onClick={() => {
-                                setEditingResearch(paper)
-                                setShowUploadForm(false)
-                                setUploadMessage('')
-                                setUploadError('')
-                              }}
-                            >
-                              Edit
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(paper._id, paper.title)}
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                {/* TABLE HEADING */}
+                <div className="admin-research-list-header">
+                  <div>
+                    <h3>Research Papers</h3>
+                    <p>
+                      Showing {filteredResearch.length} of {research.length} research papers
+                    </p>
+                  </div>
                 </div>
+
+                {/* SEARCH AND FILTER TOOLBAR */}
+                <div className="admin-research-toolbar">
+
+                  {/* SEARCH */}
+                  <form
+                    className="admin-search-form"
+                    onSubmit={(event) => {
+                      event.preventDefault()
+                      setResearchSearch(researchSearchInput.trim())
+                    }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Search by title, author, or keyword..."
+                      value={researchSearchInput}
+                      onChange={(event) =>
+                        setResearchSearchInput(event.target.value)
+                      }
+                    />
+
+                    <button type="submit">
+                      Search
+                    </button>
+                  </form>
+
+                  {/* CATEGORY FILTER */}
+                  <div className="admin-filter-form">
+
+                    <select
+                      value={researchCategoryFilter}
+                      onChange={(event) =>
+                        setResearchCategoryFilter(event.target.value)
+                      }
+                    >
+                      <option value="">All Categories</option>
+
+                      {researchCategories.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setAppliedResearchCategory(researchCategoryFilter)
+                      }
+                    >
+                      Filter
+                    </button>
+
+                    <button
+                      type="button"
+                      className="admin-reset-button"
+                      onClick={() => {
+                        setResearchSearchInput('')
+                        setResearchSearch('')
+                        setResearchCategoryFilter('')
+                        setAppliedResearchCategory('')
+                      }}
+                    >
+                      Reset
+                    </button>
+
+                  </div>
+
+                </div>
+
+                {/* RESEARCH TABLE */}
+                {filteredResearch.length > 0 ? (
+                  <div className="admin-table-wrapper">
+
+                    <table className="admin-table">
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th>Category</th>
+                          <th>Year</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {filteredResearch.map((paper) => (
+                          <tr key={paper._id}>
+                            <td>{paper.title}</td>
+                            <td>{paper.category}</td>
+                            <td>{paper.year}</td>
+
+                            <td>
+                              <div className="admin-table-actions">
+
+                                <Link
+                                  to={`/research/${paper._id}`}
+                                  className="admin-view-action"
+                                >
+                                  View
+                                </Link>
+
+                                <button
+                                  type="button"
+                                  className="admin-edit-action"
+                                  onClick={() => {
+                                    setEditingResearch(paper)
+                                    setShowUploadForm(false)
+                                    setUploadMessage('')
+                                    setUploadError('')
+                                  }}
+                                >
+                                  Edit
+                                </button>
+
+                                <button
+                                  type="button"
+                                  className="admin-delete-action"
+                                  onClick={() =>
+                                    handleDelete(paper._id, paper.title)
+                                  }
+                                >
+                                  Delete
+                                </button>
+
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                  </div>
+                ) : (
+                  <p className="admin-no-results">
+                    No research papers match your search or filter.
+                  </p>
+                )}
+
               </div>
             )}
 
