@@ -2,7 +2,7 @@
 import BASE_API_URL from '../api'
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import logo from './assets/ResearchHubLogo-1.png'
+import logo from '../assets/ResearchHubLogo-1.png'
 
 const API_URL = `${BASE_API_URL}/api/research`
 

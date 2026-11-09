@@ -2,7 +2,7 @@
 import BASE_API_URL from '../api'
 import { Link } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
-import logo from './assets/ResearchHubLogo-1.png'
+import logo from '../assets/ResearchHubLogo-1.png'
 
 function AdminDashboard() {
   const user = JSON.parse(localStorage.getItem('user'))

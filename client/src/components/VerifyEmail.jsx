@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import BASE_API_URL from '../api'
-import logo from './assets/ResearchHubLogo-1.png'
+import logo from '../assets/ResearchHubLogo-1.png'
 
 function VerifyEmail() {
   const [searchParams] = useSearchParams()
