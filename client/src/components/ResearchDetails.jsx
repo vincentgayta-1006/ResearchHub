@@ -2,6 +2,7 @@
 import BASE_API_URL from '../api'
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import logo from './assets/ResearchHubLogo-1.png'
 
 const API_URL = `${BASE_API_URL}/api/research`
 
@@ -91,7 +92,7 @@ function ResearchDetails() {
       {/* Navigation */}
       <header className="details-navbar">
         <Link to="/" className="brand">
-          <span className="brand-icon">R</span>
+          <img src={logo} alt="ResearchHub Logo" className="brand-logo" />
           ResearchHub
         </Link>
 

@@ -2,6 +2,7 @@
 import BASE_API_URL from '../api'
 import { Link } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
+import logo from './assets/ResearchHubLogo-1.png'
 
 function AdminDashboard() {
   const user = JSON.parse(localStorage.getItem('user'))
@@ -474,8 +475,8 @@ function AdminDashboard() {
       {/* NAVIGATION */}
       <header className="navbar">
         <Link to="/" className="brand">
-          <span className="brand-icon">R</span>
-          ResearchHub
+                <img src={logo} alt="ResearchHub Logo" className="brand-logo" />
+                ResearchHub
         </Link>
 
         <div className="admin-nav-actions">

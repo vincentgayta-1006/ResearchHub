@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import BASE_API_URL from '../api'
+import logo from './assets/ResearchHubLogo-1.png'
 
 function VerifyEmail() {
   const [searchParams] = useSearchParams()
@@ -46,7 +47,7 @@ function VerifyEmail() {
       <div className="verify-card">
 
         <Link to="/" className="brand">
-          <span className="brand-icon">R</span>
+          <img src={logo} alt="ResearchHub Logo" className="brand-logo" />
           ResearchHub
         </Link>
 
