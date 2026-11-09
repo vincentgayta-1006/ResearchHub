@@ -1,7 +1,7 @@
 
 import BASE_API_URL from '../api'
 import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 function AdminDashboard() {
   const user = JSON.parse(localStorage.getItem('user'))
@@ -40,6 +40,7 @@ function AdminDashboard() {
   // Edit states
   const [editingResearch, setEditingResearch] = useState(null)
   const [updating, setUpdating] = useState(false)
+  const editSectionRef = useRef(null)
 
   // Research deletion modal states
   const [researchToDelete, setResearchToDelete] = useState(null)
@@ -206,6 +207,16 @@ function AdminDashboard() {
 
     fetchUsers()
   }, [activeSection])
+
+  // Automatically scroll to edit form when editing a research paper
+  useEffect(() => {
+    if (editingResearch && editSectionRef.current) {
+      editSectionRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    }
+  }, [editingResearch])
 
   // Upload research paper
   const handleUpload = async (event) => {
@@ -517,7 +528,7 @@ function AdminDashboard() {
                 <div>
                   <span className="eyebrow">AT A GLANCE</span>
                   <h3>Dashboard Statistics</h3>
-                  <p>
+                  <p className="statistics-description">
                     Overview of ResearchHub's registered content and users.
                   </p>
                 </div>
@@ -584,7 +595,7 @@ function AdminDashboard() {
                 <div>
                   <span className="eyebrow">ADMIN TOOLS</span>
                   <h3>Management</h3>
-                  <p>
+                  <p className="statistics-description">
                     Manage the content and accounts in ResearchHub.
                   </p>
                 </div>
@@ -747,6 +758,7 @@ function AdminDashboard() {
             {/* EDIT FORM */}
             {editingResearch && (
               <form
+                ref={editSectionRef}
                 onSubmit={handleUpdate}
                 className="admin-upload-form"
               >

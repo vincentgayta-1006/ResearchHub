@@ -3062,3 +3062,27 @@ a {
   background-color: #bb2d3b;
   border-color: #bb2d3b;
 }
+
+.admin-upload-form {
+  scroll-margin-top: 100px;
+}
+
+/* Center Dashboard Section Headings and Descriptions */
+.statistics-heading {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.statistics-heading > div {
+  width: 100%;
+  text-align: center;
+}
+
+.statistics-heading .statistics-description {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
